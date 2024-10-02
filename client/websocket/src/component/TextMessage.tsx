@@ -7,7 +7,7 @@ const TextMessage = () => {
   const [isConnected, setIsConnected] = useState<boolean>(false);
 
   const connectWebSocket = () => {
-    const ws = new WebSocket("ws://localhost:8080/test-socket-endpoint"); // Replace with your WebSocket URL
+    const ws = new WebSocket("ws://localhost:8080/chat-socket-endpoint"); // Replace with your WebSocket URL
 
     ws.onopen = () => {
       console.log("WebSocket connection opened");
