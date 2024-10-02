@@ -9,7 +9,8 @@ export default function AudioStream() {
   const [audioUrl, setAudioUrl] = useState<string | null>(null); // State to hold audio URL
 
   const connectWebSocket = () => {
-    const socket = new WebSocket("ws://localhost:8080/audio-socket-endpoint");
+    const socket = new WebSocket("ws://tpphuhungbp.xyz/audio-socket-endpoint");
+    // const socket = new WebSocket("ws://localhost:8080/audio-socket-endpoint");
 
     socket.onopen = () => {
       console.log("Connected to WebSocket server");
