@@ -8,9 +8,26 @@ export default function AudioStream() {
   const [receivedData, setReceivedData] = useState<Uint8Array | null>(null);
   const [audioUrl, setAudioUrl] = useState<string | null>(null); // State to hold audio URL
 
+  const fetchSavedAudio = async () => {
+    try {
+      const response = await fetch("http://localhost:8080/audio");
+      const blob = await response.blob();
+
+      if (blob.size === 0) {
+        console.error("Fetched Blob is empty");
+        return;
+      }
+
+      const audioUrl = URL.createObjectURL(new Blob([blob], { type: "audio/webm" }));
+      setAudioUrl(audioUrl); // Update state with audio URL for playback
+    } catch (error) {
+      console.error("Error fetching audio:", error);
+    }
+  };
+
   const connectWebSocket = () => {
-    const socket = new WebSocket("ws://tpphuhungbp.xyz/audio-socket-endpoint");
-    // const socket = new WebSocket("ws://localhost:8080/audio-socket-endpoint");
+    // const socket = new WebSocket("ws://tpphuhungbp.xyz/audio-socket-endpoint");
+    const socket = new WebSocket("ws://localhost:8080/audio-socket-endpoint");
 
     socket.onopen = () => {
       console.log("Connected to WebSocket server");
@@ -59,7 +76,7 @@ export default function AudioStream() {
         }
       };
 
-      mediaRecorderRef.current.start(100); // Start recording
+      mediaRecorderRef.current.start(100); // Start recording with chunk size of 100ms or every 100ms
       setIsRecording(true);
     } catch (error) {
       console.error("Error accessing microphone:", error);
@@ -86,6 +103,14 @@ export default function AudioStream() {
       <button onClick={stopRecording} disabled={!isRecording}>
         Stop Streaming
       </button>
+      <button onClick={fetchSavedAudio}>Fetch and Play Saved Audio</button>
+
+      {audioUrl && (
+        <div>
+          <h2>Saved Audio Playback:</h2>
+          <audio controls src={audioUrl} />
+        </div>
+      )}
       <h2>Received Audio Data:</h2>
       {receivedData ? (
         <pre>{JSON.stringify(Array.from(receivedData), null, 2)}</pre>
